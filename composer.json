@@ -1,0 +1,12 @@
+{
+    "name": "cylab/docker-hello",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Thibault Debatty",
+            "email": "t.debatty@cylab.be"
+        }
+    ],
+    "require": {}
+}
