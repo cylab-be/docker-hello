@@ -1,0 +1,37 @@
+stages:
+  - test
+  - build
+  - deploy
+
+## cache composer packages between all jobs and all branches
+cache:
+  key: one-key-to-rull-them-all
+  paths:
+    - composer-cache/
+
+test:php74:
+  image: cylab/php74
+  stage: test
+  before_script:
+    - COMPOSER_CACHE_DIR=composer-cache composer install
+  script:
+    # - vendor/bin/phpunit --coverage-text --colors=never --coverage-html build/coverage
+    # - vendor/bin/phpcs
+
+build:docker:
+  stage: build
+  # this job requires docker-in-docker
+  tags:
+    - dind
+  image: docker:19.03.1
+  services:
+    - docker:19.03.1-dind
+  before_script:
+    - docker info
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - docker build --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA --tag $CI_REGISTRY_IMAGE:latest .
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker push $CI_REGISTRY_IMAGE:latest
+
+
