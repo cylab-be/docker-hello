@@ -1,4 +1,4 @@
 FROM php:7.4-apache
 
 # copy source files
-COPY ./public/* /var/www/html
+COPY ./public/* /var/www/html/
