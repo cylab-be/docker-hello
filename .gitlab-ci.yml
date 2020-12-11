@@ -51,14 +51,9 @@ deploy:
     - kubectl config set-context deploy-cluster --cluster=deploy-cluster --namespace=default --user=gitlab
     - kubectl config use-context deploy-cluster
     - kubectl version
-    # create the secret required to download from the private gitlab registry
-    - kubectl delete secret gitlab-cred
-    - kubectl create secret docker-registry gitlab-cred --docker-server=$CI_REGISTRY --docker-username=$CI_REGISTRY_USER --docker-password=$CI_REGISTRY_PASSWORD
-
   script:
     # use template to create the deploy config
     - envsubst < deploy.tmpl > deploy.yaml
-    - cat deploy.yaml
     # deploy!
     - kubectl apply -f deploy.yaml
 
