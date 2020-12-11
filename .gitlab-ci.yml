@@ -38,9 +38,13 @@ build:docker:
 
 deploy:
   stage: deploy
-  image: bitnami/kubectl
+  image: alpine
   before_script:
-    - kubectl config set-cluster deploy-cluster --server=$K8S_SERVER --insecure-skip-tls-verify
+    - apk add --no-cache curl
+    - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+    - chmod +x ./kubectl
+    - mv ./kubectl /usr/local/bin/kubectl
+    - kubectl config set-cluster deploy-cluster --server="$K8S_SERVER" --insecure-skip-tls-verify
     - kubectl config set-credentials gitlab --token=$(echo $K8S_TOKEN | base64 -d)
     - kubectl config set-context deploy-cluster --cluster=deploy-cluster --namespace=default --user=gitlab
     - kubectl config use-context deploy-cluster
