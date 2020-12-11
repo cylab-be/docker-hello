@@ -34,7 +34,7 @@ spec:
     spec:
       containers:
       - name: hello-pod
-        image: $CI_REGISTRY/$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+        image: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
         ports:
         - containerPort: 80
       imagePullSecrets:
