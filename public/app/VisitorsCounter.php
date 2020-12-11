@@ -2,10 +2,9 @@
 
 namespace cylab\hello;
 
-
 /**
  * A quick and dirty counter. Don't use for a real app!
- */ 
+ */
 class VisitorsCounter
 {
     private static $FILE = __DIR__ . "/db.json";
@@ -27,9 +26,9 @@ class VisitorsCounter
     {
          $data = @json_decode(file_get_contents(self::$FILE), true);
 
-         if (isset($data[$key])) {
-             return $data[$key];
-         }
+        if (isset($data[$key])) {
+            return $data[$key];
+        }
 
          return 0;
     }
@@ -39,8 +38,8 @@ class VisitorsCounter
         $data = [];
         try {
              $data = json_decode(file_get_contents(self::$FILE), true);
-         } catch (\Exception $ex) {
-         }
+        } catch (\Exception $ex) {
+        }
 
          $data[$key] = $value;
          file_put_contents(self::$FILE, json_encode($data));
