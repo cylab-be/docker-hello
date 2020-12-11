@@ -31,24 +31,28 @@ build:docker:
     - docker info
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
-    - docker build --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA --tag $CI_REGISTRY_IMAGE:latest .
-    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker build --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA --tag $CI_REGISTRY_IMAGE:latest .
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
     - docker push $CI_REGISTRY_IMAGE:latest
-
 
 deploy:
   stage: deploy
   image: alpine
   before_script:
+    # download kubectl
     - apk add --no-cache curl
     - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
     - chmod +x ./kubectl
     - mv ./kubectl /usr/local/bin/kubectl
+    # create the configuration (context) for our kubernetes cluster
     - kubectl config set-cluster deploy-cluster --server="$K8S_SERVER" --insecure-skip-tls-verify
     - kubectl config set-credentials gitlab --token=$(echo $K8S_TOKEN | base64 -d)
     - kubectl config set-context deploy-cluster --cluster=deploy-cluster --namespace=default --user=gitlab
     - kubectl config use-context deploy-cluster
     - kubectl version
+    # create the secret required to download from the private gitlab registry
+    - kubectl create secret docker-registry gitlab-cred --docker-server=$CI_REGISTRY --docker-username=$CI_REGISTRY_USER --docker-password=$CI_REGISTRY_PASSWORD
+
   script:
     - kubectl apply -f deploy.yaml
 
