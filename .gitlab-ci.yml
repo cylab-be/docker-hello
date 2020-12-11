@@ -37,6 +37,8 @@ build:docker:
 
 deploy:
   stage: deploy
+  only:
+    - master
   image: alpine
   before_script:
     # download kubectl
