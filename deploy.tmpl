@@ -17,7 +17,7 @@ kind: Deployment
 metadata:
   name: hello-deploy
 spec:
-  replicas: 4
+  replicas: 1
   selector:
     matchLabels:
       app: hello-app
@@ -25,7 +25,7 @@ spec:
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxUnavailable: 1
+      maxUnavailable: 0
       maxSurge: 1
   template:
     metadata:
