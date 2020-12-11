@@ -13,5 +13,10 @@
         "phpunit/phpunit": "^8.5",
         "squizlabs/php_codesniffer": "^3.5",
         "phpstan/phpstan": "^0.12.59"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "cylab\\hello\\": "public/app"
+        }
     }
 }
