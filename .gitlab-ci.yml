@@ -36,3 +36,16 @@ build:docker:
     - docker push $CI_REGISTRY_IMAGE:latest
 
 
+deploy:
+  stage: deploy
+  image: bitnami/kubectl
+  before_script:
+    - kubectl config set-cluster deploy-cluster --server=$K8S_SERVER --insecure-skip-tls-verify
+    - kubectl config set-credentials gitlab --token=$(echo $K8S_TOKEN | base64 -d)
+    - kubectl config set-context deploy-cluster --cluster=deploy-cluster --namespace=default --user=gitlab
+    - kubectl config use-context deploy-cluster
+    - kubectl version
+  script:
+    - kubectl apply -f deploy.yaml
+
+
