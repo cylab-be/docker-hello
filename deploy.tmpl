@@ -34,6 +34,8 @@ spec:
     spec:
       containers:
       - name: hello-pod
-        image: cylab/hello:1.0
+        image: $CI_REGISTRY/$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
         ports:
         - containerPort: 80
+      imagePullSecrets:
+      - name: gitlab-cred

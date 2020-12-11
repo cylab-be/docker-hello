@@ -54,6 +54,10 @@ deploy:
     - kubectl create secret docker-registry gitlab-cred --docker-server=$CI_REGISTRY --docker-username=$CI_REGISTRY_USER --docker-password=$CI_REGISTRY_PASSWORD
 
   script:
+    # use template to create the deploy config
+    - envsubst < deploy.tmpl > deploy.yaml
+    - cat deploy.yaml
+    # deploy!
     - kubectl apply -f deploy.yaml
 
 
