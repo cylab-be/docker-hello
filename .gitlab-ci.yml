@@ -40,7 +40,8 @@ deploy:
   image: alpine
   before_script:
     # download kubectl
-    - apk add --no-cache curl
+    # gettext is required to have envsubst
+    - apk add --no-cache curl gettext
     - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
     - chmod +x ./kubectl
     - mv ./kubectl /usr/local/bin/kubectl
