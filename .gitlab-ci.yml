@@ -51,6 +51,7 @@ deploy:
     - kubectl config use-context deploy-cluster
     - kubectl version
     # create the secret required to download from the private gitlab registry
+    - kubectl delete secret docker-registry
     - kubectl create secret docker-registry gitlab-cred --docker-server=$CI_REGISTRY --docker-username=$CI_REGISTRY_USER --docker-password=$CI_REGISTRY_PASSWORD
 
   script:
