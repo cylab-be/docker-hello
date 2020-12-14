@@ -12,7 +12,7 @@ class VisitorsCounter
     public static function inc()
     {
          $count = self::total();
-         $count = $count + 1;
+         $count = $count + 10;
          self::set("visitors", $count);
     }
 
