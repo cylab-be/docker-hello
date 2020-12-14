@@ -47,7 +47,7 @@ class VisitorsCounter
 
     public static function reset()
     {
-        if (is_file(self::$FILE)) {
+if (is_file(self::$FILE)) {
             unlink(self::$FILE);
         }
     }
