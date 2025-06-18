@@ -1,7 +1,6 @@
 stages:
   - test
   - build
-  - deploy
 
 ## cache composer packages between all jobs and all branches
 cache:
@@ -10,7 +9,7 @@ cache:
     - composer-cache/
 
 test:
-  image: cylab/php74
+  image: cylab/php:7.4
   stage: test
   before_script:
     - COMPOSER_CACHE_DIR=composer-cache composer install
@@ -19,7 +18,7 @@ test:
     - vendor/bin/phpcs
     - vendor/bin/phpstan analyze
 
-build:docker:
+build:1.0:
   stage: build
   # this job requires docker-in-docker
   tags:
@@ -29,28 +28,39 @@ build:docker:
     - docker:19.03.1-dind
   before_script:
     - docker info
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
   script:
-    - docker build --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA --tag $CI_REGISTRY_IMAGE:latest .
-    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
-    - docker push $CI_REGISTRY_IMAGE:latest
+    - git checkout 1.0
+    - docker build --tag cylab/hello:1.0 .
+    - docker push $cylab/hello:1.0
 
-deploy:
-  stage: deploy
-  only:
-    - master
-  image: cylab/kubectl
+build:2.0:
+  stage: build
+  # this job requires docker-in-docker
+  tags:
+    - dind
+  image: docker:19.03.1
+  services:
+    - docker:19.03.1-dind
   before_script:
-    # create the configuration (context) for our kubernetes cluster
-    - kubectl config set-cluster deploy-cluster --server="$K8S_SERVER" --insecure-skip-tls-verify
-    - kubectl config set-credentials gitlab --token=$(echo $K8S_TOKEN | base64 -d)
-    - kubectl config set-context deploy-cluster --cluster=deploy-cluster --namespace=default --user=gitlab
-    - kubectl config use-context deploy-cluster
-    - kubectl version
+    - docker info
+    - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
   script:
-    # use template to create the deploy config
-    - envsubst < deploy.tmpl > deploy.yaml
-    # deploy!
-    - kubectl apply -f deploy.yaml
+    - git checkout 2.0
+    - docker build --tag cylab/hello:2.0 .
+    - docker push $cylab/hello:2.0
 
-
+build:latest:
+  stage: build
+  # this job requires docker-in-docker
+  tags:
+    - dind
+  image: docker:19.03.1
+  services:
+    - docker:19.03.1-dind
+  before_script:
+    - docker info
+    - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+  script:
+    - docker build --tag cylab/hello:latest .
+    - docker push $cylab/hello:latest
