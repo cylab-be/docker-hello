@@ -18,7 +18,8 @@ test:
     - vendor/bin/phpcs
     - vendor/bin/phpstan analyze
 
-build:1.0:
+
+build:
   stage: build
   # this job requires docker-in-docker
   tags:
@@ -44,74 +45,7 @@ build:1.0:
     DOCKER_TLS_CERTDIR: "/certs"
 
   before_script:
-    - docker info
-    - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
-  script:
-    - git checkout 1.0
-    - docker build --tag cylab/hello:1.0 .
-    - docker push $cylab/hello:1.0
-
-build:2.0:
-  stage: build
-  # this job requires docker-in-docker
-  tags:
-    - dind
-  image: docker:20.10.17
-  services:
-    - docker:20.10.17-dind
-  variables:
-    # When you use the dind service, you must instruct Docker to talk with
-    # the daemon started inside of the service. The daemon is available
-    # with a network connection instead of the default
-    # /var/run/docker.sock socket. Docker 19.03 does this automatically
-    # by setting the DOCKER_HOST in
-    # https://github.com/docker-library/docker/blob/d45051476babc297257df490d22cbd806f1b11e4/19.03/docker-entrypoint.sh#L23-L29
-    #
-    # The 'docker' hostname is the alias of the service container as described at
-    # https://docs.gitlab.com/ee/ci/docker/using_docker_images.html#accessing-the-services.
-    #
-    # Specify to Docker where to create the certificates. Docker
-    # creates them automatically on boot, and creates
-    # `/certs/client` to share between the service and job
-    # container, thanks to volume mount from config.toml
-    DOCKER_TLS_CERTDIR: "/certs"
-
-  before_script:
-    - docker info
-    - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
-  script:
-    - git checkout 2.0
-    - docker build --tag cylab/hello:2.0 .
-    - docker push $cylab/hello:2.0
-
-build:latest:
-  stage: build
-  # this job requires docker-in-docker
-  tags:
-    - dind
-  image: docker:20.10.17
-  services:
-    - docker:20.10.17-dind
-  variables:
-    # When you use the dind service, you must instruct Docker to talk with
-    # the daemon started inside of the service. The daemon is available
-    # with a network connection instead of the default
-    # /var/run/docker.sock socket. Docker 19.03 does this automatically
-    # by setting the DOCKER_HOST in
-    # https://github.com/docker-library/docker/blob/d45051476babc297257df490d22cbd806f1b11e4/19.03/docker-entrypoint.sh#L23-L29
-    #
-    # The 'docker' hostname is the alias of the service container as described at
-    # https://docs.gitlab.com/ee/ci/docker/using_docker_images.html#accessing-the-services.
-    #
-    # Specify to Docker where to create the certificates. Docker
-    # creates them automatically on boot, and creates
-    # `/certs/client` to share between the service and job
-    # container, thanks to volume mount from config.toml
-    DOCKER_TLS_CERTDIR: "/certs"
-
-  before_script:
-    - docker info
     - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
   script:
     - docker build --tag cylab/hello:latest .
-    - docker push $cylab/hello:latest
+    - docker push cylab/hello:latest
