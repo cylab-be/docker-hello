@@ -17,6 +17,7 @@ test:
     - vendor/bin/phpunit --coverage-text --colors=never
     - vendor/bin/phpcs
     - vendor/bin/phpstan analyze
+    - composer audit
 
 include:
   - component: $CI_SERVER_FQDN/components/docker/build-and-push@1.0.0
@@ -25,7 +26,7 @@ include:
       docker_image: cylab/hello:latest
       docker_username: $DOCKER_USER
       docker_password: $DOCKER_PASSWORD
-      
+
   - component: $CI_SERVER_FQDN/components/docker/build-and-push-local@1.3.0
     inputs:
       stage: build
