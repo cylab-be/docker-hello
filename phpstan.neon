@@ -4,6 +4,5 @@ parameters:
   paths:
     - public/app
     - tests
-  excludes_analyse:
   ignoreErrors:
   reportUnmatchedIgnoredErrors: false
