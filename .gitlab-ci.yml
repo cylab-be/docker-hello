@@ -9,7 +9,7 @@ cache:
     - composer-cache/
 
 test:
-  image: cylab/php:7.4
+  image: cylab/php:8.3
   stage: test
   before_script:
     - COMPOSER_CACHE_DIR=composer-cache composer install
