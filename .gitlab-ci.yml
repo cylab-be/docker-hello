@@ -11,6 +11,7 @@ cache:
 test:
   image: cylab/php:8.3
   stage: test
+  coverage: '/^\s*Lines:\s*(\d+\.?\d*)\%/'
   before_script:
     - COMPOSER_CACHE_DIR=composer-cache composer install
   script:
