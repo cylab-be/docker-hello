@@ -37,7 +37,7 @@ class VisitorsCounter
     {
         $data = [];
         try {
-             $data = json_decode(file_get_contents(self::$FILE), true);
+             $data = @json_decode(file_get_contents(self::$FILE), true);
         } catch (\Exception $ex) {
         }
 
